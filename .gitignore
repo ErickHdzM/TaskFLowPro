@@ -1,0 +1,5 @@
+database/pgdata/
+.env
+*/node_modules
+*-lock.json
+.http

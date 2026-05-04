@@ -3,8 +3,6 @@ import { generateTokenPair, refreshAccessToken, login as login_service, register
 
 import { AppError, asyncHandler } from "../middleware/errorHandler";
 
-
-
 export const login = asyncHandler(async (req:Request, res:Response) => {
     
     const body = req.body;

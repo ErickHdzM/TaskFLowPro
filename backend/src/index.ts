@@ -2,6 +2,7 @@ import express, { Express } from 'express';
 import db from './db';
 import userRouter from './users/route';
 import authRouter  from "./auth/route";
+import projectsRouter from "./projects/route";
 import { errorHandler } from './middleware/errorHandler';
 
 const app: Express = express();
@@ -14,8 +15,9 @@ app.get('/health', (req, res) => {
     res.json({ status: 'ok' });
 });
 
-app.use('/users',   userRouter);
 app.use('/auth/v1', authRouter);
+app.use('/users',   userRouter);
+app.use('/project', projectsRouter)
 
 app.use(errorHandler);
 

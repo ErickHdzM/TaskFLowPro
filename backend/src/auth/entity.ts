@@ -21,8 +21,8 @@ export class RefreshToken{
     @JoinColumn({ name:'user_id' })
     user!: User;
 
-    @Column({type:"varchar", length: 255})
-    user_id!: string;
+    @Column({type:"varchar", nullable: true})
+    user_id?: string;
 
     @Column({type:"text",nullable:false})
     token!: string

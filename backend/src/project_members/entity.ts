@@ -20,6 +20,7 @@ export enum Roles {
 }
 
 @Entity("project_members")
+@Index(['user_id','project_id'])
 export class ProjectMembers {
 
     @PrimaryGeneratedColumn("uuid")

@@ -1,13 +1,9 @@
 import { AppDataSource } from "../db";
 import { ProjectMembers, Roles } from './entity'
 
-export interface NewMember {
-    usr_id: string;
-    prj_id: string;
-    role: Roles
-}
+import { CreateMemberDTO } from './dto';
 
-export const insert = async (data:NewMember) => {
+export const insert = async (data:CreateMemberDTO) => {
     const repo = AppDataSource.getRepository(ProjectMembers);
     const member = repo.create(data);
     return await repo.save(member);
@@ -36,7 +32,7 @@ export const getByUserId = async (prj_id:string, usr_id:string) => {
 }
 
 export const update = async (id:string, role:Roles) => {
-    await AppDataSource
+    return await AppDataSource
     .createQueryBuilder()
     .update(ProjectMembers)
     .set({role: role})
@@ -45,7 +41,7 @@ export const update = async (id:string, role:Roles) => {
 }
 
 export const drop = async (id:string) => {
-    await AppDataSource
+    return await AppDataSource
     .getRepository(ProjectMembers)
     .createQueryBuilder("pm")
     .delete()

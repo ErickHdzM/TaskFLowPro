@@ -4,6 +4,7 @@ import userRouter from './users/route';
 import authRouter  from "./auth/route";
 import projectsRouter from "./projects/route";
 import memberRouter from './project_members/route';
+import taskRouter from './tasks/route';
 import { errorHandler } from './middleware/errorHandler';
 
 const app: Express = express();
@@ -18,8 +19,9 @@ app.get('/health', (req, res) => {
 
 app.use('/auth/v1', authRouter);
 app.use('/users',   userRouter);
-app.use('/project', projectsRouter)
-app.use('/member', memberRouter)
+app.use('/project', projectsRouter);
+app.use('/member', memberRouter);
+app.use('/task', taskRouter);
 
 app.use(errorHandler);
 

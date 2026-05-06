@@ -4,7 +4,7 @@ import { AppError } from './errorHandler';
 
 import { Response, NextFunction } from "express";
 
-export const requierePermission = (resource: 'project' | 'members' | 'tasks' | 'comments', action: 'get' | 'create' | 'update' | 'delete') => {
+export const requierePermission = (resource: 'project' | 'members' | 'tasks' | 'comments', action: 'get' | 'create' | 'update' | 'delete' | 'change_status') => {
     return requireAuth(async (
         req: AuthRequest,
         res: Response,

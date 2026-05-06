@@ -5,7 +5,7 @@ import { RefreshToken } from './auth/entity';
 import { Projects } from "./projects/entity";
 import { ProjectMembers } from "./project_members/entity";
 import { Tasks } from "./tasks/entity";
-import { TaskComments } from "./task_comments/entiry";
+import { TaskComments } from "./task_comments/entity";
 import { TaskHistory } from "./task_history/entity";
 
 export const AppDataSource = new DataSource({

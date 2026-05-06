@@ -26,7 +26,6 @@ export const create = requireAuth(async (req: AuthRequest, res: Response) => {
         title: dto.title,
         description: dto.description
     });
-
     res.status(201).json(project);
 });
 
@@ -39,7 +38,7 @@ export const get = requireAuth(async (req: AuthRequest, res:Response) => {
     const id = req.params?.project_id;
     if (!id) throw new AppError(400, 'Missing information');
     const project = await getProject({ project_id: id as string, usr_id: req.user!.id });
-    res.status(200).json(project)
+    res.status(200).json({response: project})
 
 });
 
@@ -50,7 +49,6 @@ export const update = requireAuth(async (req: AuthRequest, res: Response) => {
     if (errors.length > 0) {
         throw new AppError(400, 'Invalid project data');
     }
-    console.log("intentando actualizar");
     const id = req.params?.project_id
     if (!id) throw new AppError(400, 'Missing Information');
     const project = await updateProject(id as string, dto);

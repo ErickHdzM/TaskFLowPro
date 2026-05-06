@@ -51,7 +51,7 @@ export async function selectAll(id:string): Promise<Projects[]>{
     .getMany();
 }
 
-export async function select(usr_id:string, project_id:string): Promise<Projects[]>{
+export async function select(usr_id:string, project_id:string): Promise<Projects | null>{
     return await AppDataSource
     .getRepository(Projects)
     .createQueryBuilder("p")
@@ -79,7 +79,7 @@ export async function select(usr_id:string, project_id:string): Promise<Projects
     .where("(p.owner_id = :usr_id OR pm.user_id = :usr_id)",{ usr_id })
     .andWhere("p.id = :project_id", { project_id })
     .andWhere("p.is_deleted = :isDeleted", { isDeleted: false })
-    .getMany()
+    .getOne()
 }
 
 export async function update(id:string, data:UpdateProject) {

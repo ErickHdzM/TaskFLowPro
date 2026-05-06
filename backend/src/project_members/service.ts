@@ -13,26 +13,26 @@ const permissions = {
     [Roles.OWNER]: {
         project: ['get','create','update','delete'],
         members: ['get','create','update','delete'],
-        tasks:   ['get','create','update','delete'],
+        tasks:   ['get','create','update','delete','change_status'],
         comments:['get','create','update','delete'],
     },
     [Roles.ADMIN]: {
         project: ['get','update'],
         members: ['get','create','update'],
-        tasks:   ['get','create','update','delete'],
+        tasks:   ['get','create','update','delete','change_status'],
         comments:['get','create','update'],
     },
     [Roles.EDITOR]: {
         project: ['get'],
         members: ['get'],
-        tasks:   ['get','update'],
+        tasks:   ['get','update','change_status'],
         comments:['get','create','update'],
     }
 }
 
 interface Action {
     resource: 'project' | 'members' | 'tasks' | 'comments';
-    action: 'get' | 'create' | 'update' | 'delete';
+    action: 'get' | 'create' | 'update' | 'delete' | 'change_status';
 }
 
 export const match_permission = async (usr_id: string, prj_id: string, action: Action): Promise<boolean> => {

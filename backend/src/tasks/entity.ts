@@ -5,10 +5,12 @@ import {
     CreateDateColumn,
     UpdateDateColumn,
     ManyToOne,
-    JoinColumn
+    JoinColumn,
+    OneToMany
 } from "typeorm";
 
 import { Projects } from "../projects/entity";
+import { TaskComments } from "../task_comments/entity";
 
 export enum TicketStatus {
     OPEN        = "open",
@@ -55,5 +57,8 @@ export class Tasks {
 
     @UpdateDateColumn()
     updated_at!: Date;
+
+    @OneToMany(() => TaskComments, (comment) => comment.task)
+    comments?: TaskComments[]
 
 }

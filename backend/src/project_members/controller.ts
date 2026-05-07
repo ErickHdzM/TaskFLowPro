@@ -23,7 +23,7 @@ export const insert =  requireAuth(async (req:AuthRequest, res:Response) => {
         const member = await insertMember(dto);
         res.status(201).json({member_data: member})
     }catch (err){
-        throw new AppError(400, 'This user is alredy in the project');
+        throw new AppError(400, 'This user is already in the project');
     }
 });
 

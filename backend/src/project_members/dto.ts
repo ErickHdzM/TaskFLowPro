@@ -1,6 +1,7 @@
 import {
     IsUUID,
-    IsEnum
+    IsEnum,
+    IsOptional
 } from 'class-validator'
 
 import { Roles } from './entity'
@@ -12,6 +13,7 @@ export class CreateMemberDTO {
     @IsUUID()
     project_id!:string;
 
+    @IsOptional()
     @IsEnum(Roles)
     role!:Roles
 

@@ -20,13 +20,13 @@ const permissions = {
         project: ['get','update'],
         members: ['get','create','update'],
         tasks:   ['get','create','update','delete','change_status'],
-        comments:['get','create','update'],
+        comments:['get','create','update','delete'],
     },
     [Roles.EDITOR]: {
         project: ['get'],
         members: ['get'],
         tasks:   ['get','update','change_status'],
-        comments:['get','create','update'],
+        comments:['get','create','update','delete'],
     }
 }
 

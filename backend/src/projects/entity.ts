@@ -13,6 +13,7 @@ import {
 import { User } from "../users/entity";
 import { ProjectMembers } from "../project_members/entity";
 import { Tasks } from "../tasks/entity";
+import { History } from "../history/entity";
 
 @Entity("projects")
 @Index(["owner_id"])
@@ -48,6 +49,9 @@ export class Projects{
 
     @OneToMany(() => Tasks, (task) => task.project)
     tasks?: Tasks[]
+
+    @OneToMany(() => History, (h) => h.project)
+    historyRecord?: History[]
 
 }
 

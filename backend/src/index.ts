@@ -6,6 +6,7 @@ import projectsRouter from "./projects/route";
 import memberRouter from './project_members/route';
 import taskRouter from './tasks/route';
 import commentRouter from './task_comments/route';
+import historyRouter from './history/route';
 import { errorHandler } from './middleware/errorHandler';
 
 const app: Express = express();
@@ -24,6 +25,7 @@ app.use('/project', projectsRouter);
 app.use('/member', memberRouter);
 app.use('/task', taskRouter);
 app.use('/comment', commentRouter);
+app.use('/history', historyRouter);
 
 app.use(errorHandler);
 

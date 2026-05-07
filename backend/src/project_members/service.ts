@@ -15,23 +15,26 @@ const permissions = {
         members: ['get','create','update','delete'],
         tasks:   ['get','create','update','delete','change_status'],
         comments:['get','create','update','delete'],
+        history: ['get']
     },
     [Roles.ADMIN]: {
         project: ['get','update'],
         members: ['get','create','update'],
         tasks:   ['get','create','update','delete','change_status'],
         comments:['get','create','update','delete'],
+        history: ['get']
     },
     [Roles.EDITOR]: {
         project: ['get'],
         members: ['get'],
         tasks:   ['get','update','change_status'],
         comments:['get','create','update','delete'],
+        history: ['get']
     }
 }
 
 interface Action {
-    resource: 'project' | 'members' | 'tasks' | 'comments';
+    resource: 'project' | 'members' | 'tasks' | 'comments' | 'history';
     action: 'get' | 'create' | 'update' | 'delete' | 'change_status';
 }
 
@@ -48,8 +51,8 @@ export const match_permission = async (usr_id: string, prj_id: string, action: A
 
 export const insert = async (data:CreateMemberDTO) => {
 
-    const isAlredy = await getByUserId(data.project_id,data.user_id);
-    if (isAlredy) throw new Error('This user is alredy in the project');
+    const isAlready = await getByUserId(data.project_id,data.user_id);
+    if (isAlready) throw new Error('This user is already in the project');
 
     return await insertMember(data);
 }

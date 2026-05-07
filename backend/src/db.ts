@@ -6,7 +6,7 @@ import { Projects } from "./projects/entity";
 import { ProjectMembers } from "./project_members/entity";
 import { Tasks } from "./tasks/entity";
 import { TaskComments } from "./task_comments/entity";
-import { TaskHistory } from "./task_history/entity";
+import { History } from "./history/entity";
 
 export const AppDataSource = new DataSource({
     type: "postgres",
@@ -23,7 +23,7 @@ export const AppDataSource = new DataSource({
         ProjectMembers,
         Tasks,
         TaskComments,
-        TaskHistory
+        History
     ],
 });
 

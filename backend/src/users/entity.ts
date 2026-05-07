@@ -10,6 +10,7 @@ import {
 
 import { Projects } from "../projects/entity";
 import { ProjectMembers } from "../project_members/entity";
+import { History } from "../history/entity";
 
 @Entity("users")
 @Index(["oauth_provider", "oauth_id"], { unique: true })
@@ -60,9 +61,13 @@ export class User {
     @Column({ type: "timestamp", nullable: true })
     last_login_at!: Date | null;
 
-    @OneToMany(() => Projects, (projects) => projects.owner_id)
+    @OneToMany(() => Projects, (projects) => projects.owner)
     projects?: Projects[]
 
     @OneToMany(() => ProjectMembers, (member) => member.user)
     projectMembers?: ProjectMembers[]
+
+    @OneToMany(() => History, (h) => h.user )
+    historyRecord?: History[]
+
 }

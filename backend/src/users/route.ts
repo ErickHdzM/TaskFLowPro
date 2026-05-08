@@ -1,10 +1,11 @@
 import { Router } from "express";
-import { getAllUsers, createUserHandler, getHandler } from "./controller";
+import { getAllUsers, getHandler } from "./controller";
+import { authMiddleware } from "../middleware/authHandler";
 
 const authRouter = Router();
 
-authRouter.get("/", getAllUsers);
-authRouter.get("/:id", getHandler)
-authRouter.post("/", createUserHandler);
+authRouter.get("/", getAllUsers, authMiddleware);
+authRouter.get("/:id", getHandler, authMiddleware)
+// authRouter.post("/", createUserHandler);
 
 export default authRouter;

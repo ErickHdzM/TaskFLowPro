@@ -1,4 +1,5 @@
 import express, { Express } from 'express';
+import { config } from './config';
 import db from './db';
 import userRouter from './users/route';
 import authRouter  from "./auth/route";
@@ -11,7 +12,7 @@ import { errorHandler } from './middleware/errorHandler';
 import { rateLimit } from "express-rate-limit";
 
 const app: Express = express();
-const PORT = process.env.PORT || 3000;
+const PORT = config.port;
 const limiter = rateLimit({
     windowMs: 1 * 60 * 1000,
     limit: 100,

@@ -110,9 +110,7 @@ POST /auth/v1/refresh
 ---
 
 ## Usuarios (`/users`)
-
-> Estos endpoints no requieren autenticación actualmente.
-
+> Todos los endpoints requieren autenticación.
 ### Listar todos los usuarios
 
 ```
@@ -124,14 +122,6 @@ GET /users
 ```
 GET /users/:id
 ```
-
-### Crear usuario
-
-```
-POST /users
-```
-
----
 
 ## Proyectos (`/project`)
 

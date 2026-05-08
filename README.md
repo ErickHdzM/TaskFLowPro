@@ -1,5 +1,9 @@
 # TaskFlowPro
 
+Proyecto hecho por: Erick Hernandez 
+Mi linkedin: https://www.linkedin.com/in/erick-edwin-hernandez-macias/
+MI github: https://github.com/ErickHdzM
+
 API REST para gestión de proyectos y tareas con control de roles, comentarios e historial de cambios.
 
 ## Tecnologías
@@ -52,7 +56,11 @@ Editar `.env` con los valores correspondientes:
 | `REFRESH_SECRET`  | Clave secreta para firmar refresh tokens         | cadena aleatoria   |
 | `REFRESH_EXPIRE`  | Días de expiración del refresh token             | `30`               |
 
-### 3. Levantar con Docker Compose
+### 3. Editar configuraciones del backend
+
+Para hacer modificaciones generales del backend se podrá hacer mediante el archivo `./backend/src/config.ts`, donde se puede cambiar el puerto y los orígenes permitidos por CORS.
+
+### 4. Levantar con Docker Compose
 
 ```bash
 docker-compose up
@@ -120,6 +128,15 @@ backend/src/
 ```
 
 Cada módulo sigue la estructura: `entity → repository → service → controller → route`.
+
+### ¿Por qué EventEmitter para el historial? 
+Se eligió esta opción para que el registro de auditoría fuera lo menos invasivo posible con los demás módulos, evitando introducir dependencias directas entre ellos. Cada servicio simplemente emite un evento y el módulo de historial lo escucha de forma independiente.
+
+### ¿Por qué una state machine para los estados de tareas? 
+Se introdujo una máquina de estados para evitar transiciones inválidas dentro del sistema de una manera que, en el futuro, permita modificar el flujo de estados fácilmente desde un solo lugar sin tocar la lógica de los controladores.
+
+### Rate limit
+Se aplica un límite de 100 solicitudes por minuto por IP a todos los endpoints, usando `express-rate-limit`. Esto protege la API contra ataques de fuerza bruta, especialmente en los endpoints de autenticación.
 
 ### Roles y permisos
 

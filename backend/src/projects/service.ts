@@ -30,7 +30,7 @@ export const update = async (id:string, data: UpdateProjectDTO) => {
 
 export const drop = async (id:string,usr_id:string) => {
     try{
-        await dropProject(id,usr_id);
+        return await dropProject(id,usr_id);
     }catch (err){
         throw err;
     }

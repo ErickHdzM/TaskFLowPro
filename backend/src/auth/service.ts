@@ -3,18 +3,13 @@ import bcrypt from "bcryptjs";
 
 import { search_credentials, isRefreshTokenValid, saveRefreshToken } from "./repository";
 import { getByEmail, create_user } from "../users/repository";
+import { CreateUserDTO } from "./dto";
+import { config } from "../config";
+
 
 interface TokenPair {
     accessToken: string;
     refreshToken: string;
-}
-
-export interface CreateUserDTO {
-    email: string;
-    username?: string;
-    password: string;
-    first_name?: string;
-    last_name?: string;
 }
 
 export interface RegisterResponse {
@@ -36,10 +31,10 @@ export interface JwtPayload {
 }
 
 
-const REFRESH_SECRET: string = process.env.REFRESH_SECRET as string;
-const REFRESH_EXPIRE = parseInt(process.env.REFRESH_EXPIRE || '30', 10) * 24 * 60 * 60;
+const REFRESH_SECRET = config.jwt.refresh_secret;
+const REFRESH_EXPIRE = config.jwt.refresh_expire_days * 24 * 60 * 60;
 const ACCESS_TOKEN_EXPIRE = 60 * 60;
-const JWT_SECRET: string = process.env.JWT_SECRET as string;
+const JWT_SECRET = config.jwt.secret;
 
 export const login = async (email:string, password:string): Promise<JwtPayload | null> => {
     try{

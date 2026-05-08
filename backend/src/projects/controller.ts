@@ -31,7 +31,7 @@ export const create = requireAuth(async (req: AuthRequest, res: Response) => {
 
 export const list = requireAuth(async (req: AuthRequest, res: Response) => {
     const projects = await listProjects(req.user!.id);
-    res.status(200).json(projects);
+    res.status(200).json({response: projects});
 });
 
 export const get = requireAuth(async (req: AuthRequest, res:Response) => {
@@ -53,14 +53,17 @@ export const update = requireAuth(async (req: AuthRequest, res: Response) => {
     if (!id) throw new AppError(400, 'Missing Information');
     const project = await updateProject(id as string, dto);
     if (!project) throw new AppError(500, 'Error updating the project')
-    res.status(200).json({new_data: project});
+    if (project.affected === 0) throw new AppError(404, 'Project not found')
+    res.status(200).json({response: `Project updated`});
 });
 
 export const drop = requireAuth(async (req: AuthRequest, res: Response) => {
     const id = req.params?.project_id;
     if (!id) throw new AppError(400, 'Missing Information');
     try{
-        await dropProject(id as string, req.user?.id as string);
+        const d = await dropProject(id as string, req.user?.id as string);
+        if (d.affected ===0) throw new AppError(404, 'Project not found')
+        res.status(200).json({})
     }catch (err){
         throw new AppError(500, 'Error deleting the project')
     }

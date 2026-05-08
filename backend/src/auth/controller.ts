@@ -1,18 +1,19 @@
 import {Request, Response} from 'express';
-import { generateTokenPair, refreshAccessToken, login as login_service, register as register_service, CreateUserDTO } from "./service";
-
+import { generateTokenPair, refreshAccessToken, login as login_service, register as register_service } from "./service";
+import { CreateUserDTO, LoginDTO } from './dto';
+import { validate } from 'class-validator';
+import { plainToInstance } from 'class-transformer';
 import { AppError, asyncHandler } from "../middleware/errorHandler";
 
 export const login = asyncHandler(async (req:Request, res:Response) => {
-    
-    const body = req.body;
-    console.log(body);
+    const dto = plainToInstance(LoginDTO, req.body);
+    const err = await validate(dto);
 
-    if (!body?.email || !body?.password){
-        throw new AppError(400, 'Email and password are requires')
+    if (err.length > 0) {
+        throw new AppError(400, 'Invalid project data');
     }
 
-    const user = await login_service(body.email,body.password)
+    const user = await login_service(dto.email,dto.password)
 
     if (!user){
         throw new AppError(401, "Invalid credentials")
@@ -42,10 +43,11 @@ export const refresh_controller = asyncHandler(async (req:Request, res:Response)
 
 export const register = asyncHandler(async (req:Request, res:Response) => {
     
-    const dto: CreateUserDTO = req.body;
+    const dto = plainToInstance(CreateUserDTO, req.body);
+    const err = await validate(dto);
 
-    if (!dto.email || !dto.password){
-        throw new AppError(400, 'Email and passwrod are required')
+    if (err.length > 0) {
+        throw new AppError(400, 'Invalid project data');
     }
 
     const result = await register_service(dto);

@@ -1,4 +1,5 @@
 import { DataSource } from 'typeorm';
+import { config } from './config';
 
 import { User } from './users/entity';
 import { RefreshToken } from './auth/entity';
@@ -10,12 +11,12 @@ import { History } from "./history/entity";
 
 export const AppDataSource = new DataSource({
     type: "postgres",
-    host: process.env.DB_HOST,
-    port: Number(process.env.DB_PORT),
-    username: process.env.DB_USER,
-    password: process.env.DB_PASSWORD,
-    database: process.env.DB_NAME,
-    synchronize: process.env.NODE_ENV === 'development',
+    host: config.db.host,
+    port: config.db.port,
+    username: config.db.user,
+    password: config.db.password,
+    database: config.db.name,
+    synchronize: config.node_env === 'development',
     entities: [
         User, 
         RefreshToken, 

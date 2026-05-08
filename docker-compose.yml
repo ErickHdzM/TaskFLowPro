@@ -9,6 +9,11 @@ services:
       - "5432:5432"
     volumes:
       - ./database/pgdata:/var/lib/postgresql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
+      interval: 10s
+      timeout: 30s
+      retries: 5
 
   backend:
     build:
@@ -18,9 +23,9 @@ services:
       NODE_ENV: ${NODE_ENV}
       DB_HOST: ${DB_HOST}
       DB_PORT: ${DB_PORT}
-      DB_USER: ${DB_USER}
-      DB_PASSWORD: ${DB_PASSWORD}
-      DB_NAME: ${DB_NAME}
+      DB_USER: ${POSTGRES_USER}
+      DB_PASSWORD: ${POSTGRES_PASSWORD}
+      DB_NAME: ${POSTGRES_DB}
       JWT_SECRET: ${JWT_SECRET}
       REFRESH_SECRET: ${REFRESH_SECRET}
       REFRESH_EXPIRE: ${REFRESH_EXPIRE}
@@ -30,4 +35,5 @@ services:
       - ./backend/src:/app/src
       - ./backend/tsconfig.json:/app/tsconfig.json
     depends_on:
-      - db
+      db:
+        condition: service_healthy

@@ -1,0 +1,256 @@
+# TaskFlowPro — REST API Test Requests
+# Compatible with VS Code REST Client extension and JetBrains HTTP Client.
+#
+# QUICK START:
+#   1. Run: docker-compose up
+#   2. Execute "Register" to create your user.
+#   3. Execute "Login" and copy the returned accessToken into @token below.
+#   4. Copy the IDs returned by each request into the variables section as you go.
+
+# ─── Variables ────────────────────────────────────────────────────────────────
+
+@base      = http://localhost:3000
+@token     = PASTE_ACCESS_TOKEN_HERE
+@refresh   = PASTE_REFRESH_TOKEN_HERE
+
+# Fill these in as you create resources:
+@userId       = PASTE_USER_ID_HERE
+@projectId    = PASTE_PROJECT_ID_HERE
+@memberId     = PASTE_MEMBER_ID_HERE
+@taskId       = PASTE_TASK_ID_HERE
+@commentId    = PASTE_COMMENT_ID_HERE
+
+
+# ══════════════════════════════════════════════════════════════════════════════
+# HEALTH
+# ══════════════════════════════════════════════════════════════════════════════
+
+### Health check
+GET {{base}}/health
+
+
+# ══════════════════════════════════════════════════════════════════════════════
+# AUTH  —  /auth/v1
+# ══════════════════════════════════════════════════════════════════════════════
+
+### Register — creates a new user and returns tokens
+POST {{base}}/auth/v1/register
+Content-Type: application/json
+
+{
+  "email": "alice@example.com",
+  "password": "Secret123!",
+  "username": "alice",
+  "first_name": "Alice",
+  "last_name": "Smith"
+}
+
+###
+
+### Login — returns accessToken + refreshToken
+POST {{base}}/auth/v1/login
+Content-Type: application/json
+
+{
+  "email": "alice@example.com",
+  "password": "Secret123!"
+}
+
+###
+
+### Refresh access token
+POST {{base}}/auth/v1/refresh
+Content-Type: application/json
+
+{
+  "refreshToken": "{{refresh}}"
+}
+
+
+# ══════════════════════════════════════════════════════════════════════════════
+# USERS  —  /users
+# ══════════════════════════════════════════════════════════════════════════════
+
+### List all users
+GET {{base}}/users
+Authorization: Bearer {{token}}
+
+###
+
+### Get user by ID
+GET {{base}}/users/{{userId}}
+Authorization: Bearer {{token}}
+
+
+# ══════════════════════════════════════════════════════════════════════════════
+# PROJECTS  —  /project
+# ══════════════════════════════════════════════════════════════════════════════
+
+### List my projects
+GET {{base}}/project
+Authorization: Bearer {{token}}
+
+###
+
+### Get one project  (requires owner/admin/editor membership)
+GET {{base}}/project/{{projectId}}
+Authorization: Bearer {{token}}
+
+###
+
+### Create project  — copy the returned id into @projectId
+POST {{base}}/project
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "title": "TaskFlowPro Launch",
+  "description": "All tasks related to the initial product launch"
+}
+
+###
+
+### Update project
+PUT {{base}}/project/{{projectId}}
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "title": "TaskFlowPro Launch v2",
+  "description": "Updated scope after stakeholder review"
+}
+
+###
+
+### Delete project  (owner only)
+DELETE {{base}}/project/{{projectId}}
+Authorization: Bearer {{token}}
+
+
+# ══════════════════════════════════════════════════════════════════════════════
+# MEMBERS  —  /member
+# ══════════════════════════════════════════════════════════════════════════════
+
+### List members of a project  (owner/admin/editor)
+GET {{base}}/member/{{projectId}}
+Authorization: Bearer {{token}}
+
+###
+
+### Add member to project — copy member id into @memberId
+# user_id must be a valid UUID of an existing user; role: owner | admin | editor
+POST {{base}}/member/{{projectId}}
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "user_id": "{{userId}}",
+  "role": "editor"
+}
+
+###
+
+### Update member role  (owner/admin)
+PUT {{base}}/member/{{projectId}}/{{memberId}}
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "role": "admin"
+}
+
+###
+
+### Remove member from project  (owner/admin)
+DELETE {{base}}/member/{{projectId}}/{{memberId}}
+Authorization: Bearer {{token}}
+
+
+# ══════════════════════════════════════════════════════════════════════════════
+# TASKS  —  /task
+# ══════════════════════════════════════════════════════════════════════════════
+# status values:  open | in progress | pending | resolved | closed
+# priority values: planning | low | medium | high | critical
+
+### List tasks in a project
+GET {{base}}/task/{{projectId}}
+Authorization: Bearer {{token}}
+
+###
+
+### Get one task
+GET {{base}}/task/{{projectId}}/{{taskId}}
+Authorization: Bearer {{token}}
+
+###
+
+### Create task — copy the returned id into @taskId
+POST {{base}}/task/{{projectId}}
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "title": "Design landing page",
+  "description": "Create wireframes and hand off to dev",
+  "status": "open",
+  "priority": "high"
+}
+
+###
+
+### Update task  (title / description / priority)
+PUT {{base}}/task/{{projectId}}/{{taskId}}
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "title": "Design landing page — revised",
+  "description": "Include mobile breakpoints in the wireframes",
+  "priority": "critical"
+}
+
+###
+
+### Change task status
+PUT {{base}}/task/{{projectId}}/{{taskId}}/change_status
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "status": "in progress"
+}
+
+###
+
+### Delete task
+DELETE {{base}}/task/{{projectId}}/{{taskId}}
+Authorization: Bearer {{token}}
+
+
+# ══════════════════════════════════════════════════════════════════════════════
+# COMMENTS  —  /comment
+# ══════════════════════════════════════════════════════════════════════════════
+
+### Add comment to a task — copy the returned id into @commentId
+POST {{base}}/comment/{{projectId}}/{{taskId}}
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "comment": "Wireframes look great, approved for development!"
+}
+
+###
+
+### Delete comment
+DELETE {{base}}/comment/{{projectId}}/{{taskId}}/{{commentId}}
+Authorization: Bearer {{token}}
+
+
+# ══════════════════════════════════════════════════════════════════════════════
+# HISTORY  —  /history
+# ══════════════════════════════════════════════════════════════════════════════
+
+### Get audit log for a project  (owner/admin/editor)
+GET {{base}}/history/{{projectId}}
+Authorization: Bearer {{token}}

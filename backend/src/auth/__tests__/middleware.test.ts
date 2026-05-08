@@ -34,7 +34,7 @@ describe('Auth Middleware', () => {
 
     expect(mockResponse.status).toHaveBeenCalledWith(401);
     expect(mockResponse.json).toHaveBeenCalledWith({
-      error: 'No token provied',
+      error: 'No token provide',
     });
     expect(mockNext).not.toHaveBeenCalled();
   });

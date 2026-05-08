@@ -122,7 +122,7 @@ describe('Auth Service', () => {
       expect(result).toEqual(mockJwtPayload);
       expect(mockJwt.verify).toHaveBeenCalledWith(
         'valid_token',
-        expect.any(String)
+        process.env.JWT_SECRET
       );
     });
 

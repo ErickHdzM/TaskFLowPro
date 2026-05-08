@@ -8,12 +8,20 @@ import taskRouter from './tasks/route';
 import commentRouter from './task_comments/route';
 import historyRouter from './history/route';
 import { errorHandler } from './middleware/errorHandler';
+import { rateLimit } from "express-rate-limit";
 
 const app: Express = express();
 const PORT = process.env.PORT || 3000;
+const limiter = rateLimit({
+    windowMs: 1 * 60 * 1000,
+    limit: 100,
+    standardHeaders: true,
+    legacyHeaders: false
+});
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.use(limiter);
 
 app.get('/health', (req, res) => {
     res.json({ status: 'ok' });

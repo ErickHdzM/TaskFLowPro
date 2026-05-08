@@ -8,6 +8,13 @@ import {
 
 import { CreateMemberDTO } from './dto';
 import { Roles } from './entity';
+import { historyEmitter } from '../history/emitter';
+import { Actions, Resources } from '../history/entity';
+import { canManipulateRecords, toStringArray } from '../history/service';
+import { AppError } from '../middleware/errorHandler';
+
+const resource = 'members' as const;
+const MEMBER_FIELDS = ['user_id', 'role'];
 
 const permissions = {
     [Roles.OWNER]: {
@@ -49,23 +56,64 @@ export const match_permission = async (usr_id: string, prj_id: string, action: A
     return allowedActions.includes(action.action);
 }
 
-export const insert = async (data:CreateMemberDTO) => {
-
-    const isAlready = await getByUserId(data.project_id,data.user_id);
+export const insert = async (data: CreateMemberDTO, user_id: string) => {
+    const isAlready = await getByUserId(data.project_id, data.user_id);
     if (isAlready) throw new Error('This user is already in the project');
 
-    return await insertMember(data);
+    const res = await insertMember(data);
+
+    historyEmitter.emit('record', {
+        project_id: data.project_id,
+        user_id,
+        resource: Resources.MEMBERS,
+        action: Actions.CREATE,
+        resource_id: res.id,
+        field_changed: MEMBER_FIELDS,
+        old_value: [],
+        new_value: toStringArray(MEMBER_FIELDS, res),
+    });
+
+    return res;
 }
 
-export const list = async (prj_id:string) => {
+export const list = async (prj_id: string) => {
     return await listMembers(prj_id);
 }
 
-export const update = async (id:string, role:Roles) => {
-    return await updateMember(id, role);
+export const update = async (id: string, role: Roles, project_id: string, user_id: string) => {
+    const oldValues = await canManipulateRecords(resource, id, ['role']);
+    if (!oldValues.length) throw new AppError(404, 'Member not found');
+
+    const res = await updateMember(id, role);
+
+    historyEmitter.emit('record', {
+        project_id,
+        user_id,
+        resource: Resources.MEMBERS,
+        action: Actions.UPDATE,
+        resource_id: id,
+        field_changed: ['role'],
+        old_value: oldValues,
+        new_value: [role],
+    });
+
+    return res;
 }
 
-export const drop = async (id:string) => {
-    const res = await dropMember(id);
-    if (res.affected === 0) throw new Error('Data not found')
+export const drop = async (id: string, project_id: string, user_id: string) => {
+    const oldValues = await canManipulateRecords(resource, id, MEMBER_FIELDS);
+    if (!oldValues.length) throw new AppError(404, 'Member not found');
+
+    await dropMember(id);
+
+    historyEmitter.emit('record', {
+        project_id,
+        user_id,
+        resource: Resources.MEMBERS,
+        action: Actions.DELETE,
+        resource_id: id,
+        field_changed: MEMBER_FIELDS,
+        old_value: oldValues,
+        new_value: [],
+    });
 }

@@ -3,7 +3,7 @@ import { User } from "../users/entity";
 import { AppDataSource } from "../db";
 
 export const search_credentials = async (email:string) => {
-    const usr = AppDataSource
+    const usr = await AppDataSource
     .getRepository(User)
     .createQueryBuilder("user")
     .select(["user.id","user.email","user.username","user.password_hash"])

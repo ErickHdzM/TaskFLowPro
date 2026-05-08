@@ -41,24 +41,18 @@ export const refresh_controller = asyncHandler(async (req:Request, res:Response)
 });
 
 export const register = asyncHandler(async (req:Request, res:Response) => {
-    try{
-        const dto: CreateUserDTO = req.body;
-        console.log(dto);
-        if (!dto.email || !dto.password){
-            throw new AppError(400, 'Email and passwrod are required')
-        }
+    
+    const dto: CreateUserDTO = req.body;
 
-        const result = await register_service(dto);
-        if (!result){
-            throw new AppError(500, 'Error creating user')
-        }
-
-        res.status(201).json(result);
-    }catch(err){
-        if (err instanceof Error && err.message === "Email already in use"){
-            throw new AppError(409, err.message)
-        }
-        console.log("[AUTH CONTROLLER] Error in register", err);
-        throw new AppError(500, 'Internal server error')
+    if (!dto.email || !dto.password){
+        throw new AppError(400, 'Email and passwrod are required')
     }
+
+    const result = await register_service(dto);
+    if (!result){
+        throw new AppError(500, 'Error creating user')
+    }
+
+    res.status(201).json(result);
+    
 });

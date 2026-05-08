@@ -36,10 +36,10 @@ export interface JwtPayload {
 }
 
 
-const REFRESH_SECRET: string = process.env.REFRESH_SECRET || 'refresh-secret';
+const REFRESH_SECRET: string = process.env.REFRESH_SECRET as string;
 const REFRESH_EXPIRE = parseInt(process.env.REFRESH_EXPIRE || '30', 10) * 24 * 60 * 60;
 const ACCESS_TOKEN_EXPIRE = 60 * 60;
-const JWT_SECRET: string = process.env.JWT_SECRET || "HOFISDJF-LJKN39569873";
+const JWT_SECRET: string = process.env.JWT_SECRET as string;
 
 export const login = async (email:string, password:string): Promise<JwtPayload | null> => {
     try{

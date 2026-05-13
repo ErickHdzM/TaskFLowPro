@@ -4,8 +4,8 @@ import { authMiddleware } from "../middleware/authHandler";
 
 const authRouter = Router();
 
-authRouter.get("/", getAllUsers, authMiddleware);
-authRouter.get("/:id", getHandler, authMiddleware)
+authRouter.get("/", authMiddleware,getAllUsers);
+authRouter.get("/:id",authMiddleware, getHandler)
 // authRouter.post("/", createUserHandler);
 
 export default authRouter;

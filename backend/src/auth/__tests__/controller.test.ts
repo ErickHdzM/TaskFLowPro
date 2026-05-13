@@ -12,6 +12,16 @@ jest.mock('../../middleware/errorHandler', () => {
     };
 });
 jest.mock('../service');
+jest.mock('class-validator', () => ({
+    validate: jest.fn().mockResolvedValue([]),
+    IsEmail: () => () => {},
+    IsString: () => () => {},
+    IsOptional: () => () => {},
+    IsStrongPassword: () => () => {},
+}));
+jest.mock('class-transformer', () => ({
+    plainToInstance: jest.fn().mockImplementation((_, obj) => obj),
+}));
 
 const mockAuthService = authService as jest.Mocked<typeof authService>;
 
@@ -32,6 +42,8 @@ describe('Auth Controller', () => {
 
     describe('login', () => {
         it('should call next with 400 if email is missing', async () => {
+            const { validate } = require('class-validator');
+            validate.mockResolvedValueOnce([{ property: 'email', constraints: { isEmail: 'email must be an email' } }]);
             mockRequest.body = { password: 'password123' };
 
             await authController.login(mockRequest as Request, mockResponse as Response, mockNext);
@@ -40,6 +52,8 @@ describe('Auth Controller', () => {
         });
 
         it('should call next with 400 if password is missing', async () => {
+            const { validate } = require('class-validator');
+            validate.mockResolvedValueOnce([{ property: 'password', constraints: { isString: 'password must be a string' } }]);
             mockRequest.body = { email: 'test@example.com' };
 
             await authController.login(mockRequest as Request, mockResponse as Response, mockNext);
@@ -110,6 +124,8 @@ describe('Auth Controller', () => {
 
     describe('register', () => {
         it('should call next with 400 if email or password is missing', async () => {
+            const { validate } = require('class-validator');
+            validate.mockResolvedValueOnce([{ property: 'password', constraints: { isStrongPassword: 'password is too weak' } }]);
             mockRequest.body = { email: 'test@example.com' };
 
             await authController.register(mockRequest as Request, mockResponse as Response, mockNext);

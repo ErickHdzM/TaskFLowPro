@@ -31,7 +31,7 @@ export const create = requireAuth(async (req: AuthRequest, res: Response) => {
 
 export const list = requireAuth(async (req: AuthRequest, res: Response) => {
     const projects = await listProjects(req.user!.id);
-    res.status(200).json({response: projects});
+    res.status(200).json(projects);
 });
 
 export const get = requireAuth(async (req: AuthRequest, res:Response) => {
@@ -54,7 +54,7 @@ export const update = requireAuth(async (req: AuthRequest, res: Response) => {
     const project = await updateProject(id as string, dto);
     if (!project) throw new AppError(500, 'Error updating the project')
     if (project.affected === 0) throw new AppError(404, 'Project not found')
-    res.status(200).json({response: `Project updated`});
+    res.status(200).json({ new_data: project });
 });
 
 export const drop = requireAuth(async (req: AuthRequest, res: Response) => {
